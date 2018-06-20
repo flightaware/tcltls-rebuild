@@ -1,0 +1,2 @@
+debian/tmp/usr/lib/tcltls1.7.16/*.tcl		usr/lib/tcltls1.7.16/
+debian/tmp/usr/lib/tcltls1.7.16/tcltls.so	usr/lib/tcltls1.7.16/

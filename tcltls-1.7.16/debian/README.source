@@ -1,0 +1,13 @@
+Tarball:
+========
+The source directory has been renamed from tls1.6.4/ to tcltls-1.6.4+dfsg and
+then it has to be compressed using gzip -9 in order to comply with Debian
+Policy.
+
+dpatch:
+======
+The source package itself uses a mixture of dpatch and .diff.gz for the
+modifications of the upstream source. If you want to change something it is
+best to use the dpatch approach as documented in
+
+ /usr/share/doc/dpatch/README.source.gz

@@ -1,0 +1,4 @@
+# Compulsory line, this is a version 3 file
+version=3
+opts=dversionmangle=s/\.dfsg// \
+ http://sf.net/tls/tls(.*)-src(.*)\.tar\.gz

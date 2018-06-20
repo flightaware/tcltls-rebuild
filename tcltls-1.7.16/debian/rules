@@ -1,0 +1,101 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+config.status: configure
+	dh_testdir
+	# Add here commands to configure the package.
+	./configure \
+		--host=$(DEB_HOST_GNU_TYPE) \
+		--build=$(DEB_BUILD_GNU_TYPE) \
+		--prefix=/usr \
+		--mandir=\$${prefix}/share/man \
+		--infodir=\$${prefix}/share/info \
+		--with-ssl-dir=/usr \
+		--with-tcl=/usr/lib/ \
+		--with-tclinclude=/usr/include/tcl # LDFLAGS="-Wl,-soname,libtls.so.0"
+
+build: build-arch build-indep
+build-arch: build-stamp
+build-indep: build-stamp
+
+build-stamp: config.status
+	dh_testdir
+
+	# Add here commands to compile the package.
+	$(MAKE)
+	#/usr/bin/docbook-to-man debian/tcltls.sgml > tcltls.1
+	touch build-stamp
+
+clean: unpatch
+	dh_testdir
+	dh_testroot
+	# Add here commands to clean up after the build process.
+	[ ! -f Makefile ] || $(MAKE) distclean
+	rm -f config/config.guess config/config.sub aclocal.m4
+	rm -rf debian/tcl-tls debian/patched debian/*.substvars
+	rm -rf debian/files
+	rm -rf config.log
+	dh_clean
+
+install: build
+	#dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	# Add here commands to install the package into debian/tcltls.
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+#	install -D -m 0644 debian/tcl-tls.override \
+                $(CURDIR)/debian/tcl-tls/usr/share/lintian/overrides/tcl-tls
+	# Removing rpath
+	chrpath -d $(CURDIR)/debian/tmp/usr/lib/tcltls1.7.16/tcltls.so
+	#sed -i -e '/tls::initlib/s!\$$dir!/usr/lib!' $(CURDIR)/debian/tmp/usr/lib/tcltls1.7.16/pkgIndex.tcl
+	dh_install
+
+# Build architecture-independent files here.
+binary-indep: build install
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs ChangeLog
+	dh_installdocs tls.htm
+	dh_installexamples tests/*
+	dh_installman
+	#dh_link usr/lib/libtls1.6.7.so usr/lib/libtls.so.0
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	tcltk-depends
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install patch unpatch
