@@ -3,12 +3,17 @@ Thu, 16 Oct 2003 22:33:45 +0000.
 
 The current Debian maintainer is Muammar El Khatib <muammar@debian.org>
 
-It was downloaded from http://tls.sf.net/
+It was downloaded from https://core.tcl.tk/tcltls
 
 Upstream Author: Matt Newman <matt@novadigm.com>
 
-
-Copyright: © 2000 - 2015, Matt Newman.
+Copyright (c) 1997-2000 Matt Newman <matt@novadigm.com>
+Copyright (c) 2000 Ajuba Solutions
+Copyright (c) 2008 ActiveState Software Inc.
+Copyright (c) 2016 Matt Newman,
+                   Ajuba Solutions,
+                   ActiveState Software Inc,
+                   Roy Keene <tcltls@rkeene.org>
 
 License:
 
@@ -47,4 +52,4 @@ authors grant the U.S. Government and others acting in its behalf
 permission to use and distribute the software in accordance with the
 terms specified in this license.
 
-The Debian packaging is © 2015, Muammar El Khatib <muammar@debian.org>.
+The Debian packaging is (c) 2015, Muammar El Khatib <muammar@debian.org>.

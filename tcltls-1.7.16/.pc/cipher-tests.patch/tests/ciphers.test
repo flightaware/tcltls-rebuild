@@ -23,7 +23,7 @@ package require tls
 # tls was compiled against. (RSA BSAFE SSL-C or OpenSSL).
 #
 set ::tcltest::testConstraints(rsabsafe) 0
-set ::tcltest::testConstraints(openssl) 0
+set ::tcltest::testConstraints(openssl) [string match "OpenSSL*" [tls::version]]
 
 set ::EXPECTEDCIPHERS(rsabsafe) {
     EDH-DSS-RC4-SHA
