@@ -12,9 +12,6 @@ BASE=$(dpkg-parsechangelog -S Version)
 BUILD=2
 
 case "$DIST" in
-    wheezy)
-        dch --newversion ${BASE}~bpo7+${BUILD} --force-bad-version --distribution wheezy-backports --force-distribution "Backport to wheezy"
-        ;;
     jessie)
         dch --newversion ${BASE}~bpo8+${BUILD} --force-bad-version --distribution jessie-backports --force-distribution "Backport to jessie"
         ;;
