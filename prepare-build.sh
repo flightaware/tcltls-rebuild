@@ -13,6 +13,7 @@ BUILD=2
 
 case "$DIST" in
     jessie)
+        sed -i -e 's/debhelper (>= 10)/debhelper (>= 9)/' debian/control
         dch --newversion ${BASE}~bpo8+${BUILD} --force-bad-version --distribution jessie-backports --force-distribution "Backport to jessie"
         ;;
     stretch)
