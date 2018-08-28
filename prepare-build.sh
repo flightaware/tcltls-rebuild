@@ -3,6 +3,7 @@
 export DEBFULLNAME=${DEBFULLNAME:-FlightAware build automation}
 export DEBEMAIL=${DEBEMAIL:-adsb-devs@flightaware.com}
 
+TOP=$(dirname $0)
 DIST=$1
 OUT=$2
 
@@ -13,7 +14,7 @@ else
     OUT=$(realpath package-$DIST)
 fi
 
-cp -a tcltls-1.7.16 $OUT
+cp -a $TOP/tcltls-1.7.16 $OUT
 cd $OUT
 
 # nb: we force the full version number here to get the correct build number
