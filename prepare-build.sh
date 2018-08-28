@@ -1,23 +1,33 @@
 #!/bin/sh
 
+export DEBFULLNAME=${DEBFULLNAME:-FlightAware build automation}
+export DEBEMAIL=${DEBEMAIL:-adsb-devs@flightaware.com}
+
 DIST=$1
+OUT=$2
 
-cp -a tcltls-1.7.16 package-$DIST
-cd package-$DIST
+if [ -n "$OUT" ]
+then
+    OUT=$(realpath $OUT)
+else
+    OUT=$(realpath package-$DIST)
+fi
 
-# nb: we force the full version number here to get the correct build number (+2) to reflect the earlier, released,
-# backport we did for FF 7.8.10
+cp -a tcltls-1.7.16 $OUT
+cd $OUT
+
+# nb: we force the full version number here to get the correct build number
 
 BASE=$(dpkg-parsechangelog -S Version)
-BUILD=2
+BUILD=3
 
 case "$DIST" in
     jessie)
         sed -i -e 's/debhelper (>= 10)/debhelper (>= 9)/' debian/control
-        dch --newversion ${BASE}~bpo8+${BUILD} --force-bad-version --distribution jessie-backports --force-distribution "Backport to jessie"
+        dch --newversion ${BASE}~bpo8+${BUILD} --force-bad-version --distribution jessie-backports --force-distribution "Automated backport to jessie"
         ;;
     stretch)
-        dch --newversion ${BASE}~bpo9+${BUILD} --force-bad-version --distribution stretch-backports --force-distribution "Backport to stretch"
+        dch --newversion ${BASE}~bpo9+${BUILD} --force-bad-version --distribution stretch-backports --force-distribution "Automated backport to stretch"
         ;;
     *)
         echo "Don't know how to build tcltls for a distribution named $DIST" >&2
