@@ -30,7 +30,7 @@ node(label: 'raspberrypi') {
         }
 
         stage("Test install on ${dist}") {
-            sh "/build/repo/validate-packages.sh ${dist} ${results}/*.deb"
+            sh "/build/repo/validate-packages.sh ${dist} ${results}/tcl-tls_*.deb"
         }
     }
 
