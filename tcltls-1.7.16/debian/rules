@@ -12,7 +12,8 @@ include /usr/share/dpkg/buildflags.mk
 override_dh_auto_configure:
 	dh_auto_configure -- --with-ssl-dir=/usr \
 			     --with-tcl=/usr/lib \
-			     --enable-deterministic
+			     --enable-deterministic \
+			     --enable-ssl-fastpath
 
 override_dh_auto_install:
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp

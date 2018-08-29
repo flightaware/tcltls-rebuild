@@ -20,7 +20,7 @@ cd $OUT
 # nb: we force the full version number here to get the correct build number
 
 BASE=$(dpkg-parsechangelog -S Version)
-BUILD=3
+BUILD=4
 
 case "$DIST" in
     jessie)
