@@ -1,4 +1,9 @@
 node(label: 'raspberrypi') {
+    properties([
+        disableConcurrentBuilds(),
+        durabilityHint(hint: 'PERFORMANCE_OPTIMIZED')
+    ])
+
     def dists = ["stretch", "jessie"]
     def srcdir = "${WORKSPACE}/src"
 
@@ -24,23 +29,21 @@ node(label: 'raspberrypi') {
             sh "rm -fr ${results}"
             sh "mkdir -p ${results}"
             dir(pkgdir) {
-                sh "DIST=${dist} pdebuild --use-pdebuild-internal --debbuildopts -b --buildresult ${WORKSPACE}/${results}"
+                sh "DIST=${dist} BRANCH=${env.BRANCH_NAME} pdebuild --use-pdebuild-internal --debbuildopts -b --buildresult ${WORKSPACE}/${results} -- --override-config"
             }
             archiveArtifacts artifacts: "${results}/*.deb", fingerprint: true
         }
 
         stage("Test install on ${dist}") {
-            sh "/build/repo/validate-packages.sh ${dist} ${results}/tcl-tls_*.deb"
+            sh "BRANCH=${env.BRANCH_NAME} /build/pi-builder/scripts/validate-packages.sh ${dist} ${results}/tcl-tls_*.deb"
         }
     }
 
-    if (env.BRANCH_NAME == "master" || env.BRANCH_NAME == "dev") {
-        stage("Deploy to staging repo") {
-            for (int i = 0; i < dists.size(); ++i) {
-                def dist = dists[i]
-                def results = "results-${dist}"
-                sh "/build/repo/deploy-packages.sh ${dist} ${results}/*.deb"
-            }
+    stage('Deploy to internal repository') {
+        for (int i = 0; i < dists.size(); ++i) {
+            def dist = dists[i]
+            def results = "results-${dist}"
+            sh "/build/pi-builder/scripts/deploy.sh -distribution ${dist} -branch ${env.BRANCH_NAME} ${results}/*.deb"
         }
     }
 }
