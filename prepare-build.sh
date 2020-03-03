@@ -30,6 +30,8 @@ case "$DIST" in
     stretch)
         dch --newversion ${BASE}~bpo9+${BUILD} --force-bad-version --distribution stretch-backports --force-distribution "Automated backport to stretch"
         ;;
+    buster)
+        ;;
     *)
         echo "Don't know how to build tcltls for a distribution named $DIST" >&2
         exit 1
