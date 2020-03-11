@@ -25,10 +25,10 @@ BUILD=4
 case "$DIST" in
     jessie)
         sed -i -e 's/debhelper (>= 10)/debhelper (>= 9)/' debian/control
-        dch --newversion ${BASE}~bpo8+${BUILD} --force-bad-version --distribution jessie-backports --force-distribution "Automated backport to jessie"
+        dch --local ~bpo8+ --distribution jessie-backports --force-distribution "Automated backport to jessie"
         ;;
     stretch)
-        dch --newversion ${BASE}~bpo9+${BUILD} --force-bad-version --distribution stretch-backports --force-distribution "Automated backport to stretch"
+        dch --local ~bpo9+ --distribution stretch-backports --force-distribution "Automated backport to stretch"
         ;;
     buster)
         ;;

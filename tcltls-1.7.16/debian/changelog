@@ -1,3 +1,9 @@
+tcltls (1.7.16-1+fa1) UNRELEASED; urgency=medium
+
+  * Rebuild with --enable-ssl-fastpath workaround
+
+ -- Oliver Jowett <oliver.jowett@flightaware.com>  Thu, 12 Mar 2020 00:47:59 +0800
+
 tcltls (1.7.16-1) unstable; urgency=medium
 
   * New upstream and new upstream version (closes: #848050).
