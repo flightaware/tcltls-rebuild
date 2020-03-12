@@ -17,11 +17,6 @@ fi
 cp -a $TOP/tcltls-1.7.16 $OUT
 cd $OUT
 
-# nb: we force the full version number here to get the correct build number
-
-BASE=$(dpkg-parsechangelog -S Version)
-BUILD=4
-
 case "$DIST" in
     jessie)
         sed -i -e 's/debhelper (>= 10)/debhelper (>= 9)/' debian/control
