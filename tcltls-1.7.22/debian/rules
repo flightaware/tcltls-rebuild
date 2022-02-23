@@ -1,0 +1,25 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- --with-ssl-dir=/usr \
+			     --with-tcl=/usr/lib \
+			     --enable-deterministic
+
+override_dh_auto_install:
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	chrpath -d $(CURDIR)/debian/tmp/usr/lib/*/tcltls*/tcltls.so
+
+override_dh_gencontrol:
+	tcltk-depends
+	dh_gencontrol
+
+PHONY: override_dh_auto_configure override_dh_gencontrol

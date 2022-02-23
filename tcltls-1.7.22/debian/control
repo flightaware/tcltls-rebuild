@@ -1,0 +1,23 @@
+Source: tcltls
+Section: libs
+Priority: optional
+Maintainer: Debian Tcl/Tk Packagers <pkg-tcltk-devel@lists.alioth.debian.org>
+Uploaders: Muammar El Khatib <muammar@debian.org>, Sergei Golovan <sgolovan@debian.org>
+Build-Depends: debhelper (>= 10), libssl-dev, tcl-dev (>= 8.5), chrpath
+Standards-Version: 4.5.0
+Homepage: https://core.tcl.tk/tcltls
+Vcs-Browser: https://salsa.debian.org/tcltk-team/tcltls
+Vcs-Git: https://salsa.debian.org/tcltk-team/tcltls.git
+
+Package: tcl-tls
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${libtcl:Depends}
+Multi-Arch: same
+Provides: tcltls
+Replaces: libtls0, tcltls
+Conflicts: libtls0, tcltls
+Description: TLS OpenSSL extension to Tcl
+ This package enables communication over SSL-encrypted channels in Tcl.
+ .
+ Both client and server-side sockets are possible. Additionally, full
+ filevent semantics should be intact.

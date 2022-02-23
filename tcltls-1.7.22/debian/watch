@@ -1,0 +1,5 @@
+# Compulsory line, this is a version 3 file
+version=3
+opts=dversionmangle=s/\+dfsg// \
+    https://core.tcl.tk/tcltls/uvlist?byage=1 \
+    /tcltls/uv/tcltls-(.*).tar.gz
