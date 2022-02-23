@@ -1,3 +1,9 @@
+tcltls (1.7.22-2+fa1) UNRELEASED; urgency=medium
+
+  * Rebuild with --enable-ssl-fastpath workaround
+
+ -- Eric Tran <eric.tran@flightaware.com>  Wed, 23 Feb 2022 16:02:47 -0600
+
 tcltls (1.7.22-2) unstable; urgency=medium
 
   * Use an alternative approach to build the package deterministically.
