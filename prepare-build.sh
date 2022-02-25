@@ -14,18 +14,17 @@ else
     OUT=$(realpath package-$DIST)
 fi
 
-cp -a $TOP/tcltls-1.7.16 $OUT
+cp -a $TOP/tcltls-1.7.22 $OUT
 cd $OUT
 
 case "$DIST" in
-    jessie)
-        sed -i -e 's/debhelper (>= 10)/debhelper (>= 9)/' debian/control
-        dch --local ~bpo8+ --distribution jessie-backports --force-distribution "Automated backport to jessie"
-        ;;
     stretch)
         dch --local ~bpo9+ --distribution stretch-backports --force-distribution "Automated backport to stretch"
         ;;
     buster)
+        dch --local ~bpo10+ --distribution buster-backports --force-distribution "Automated backport to buster"
+        ;;
+    bullseye)
         ;;
     *)
         echo "Don't know how to build tcltls for a distribution named $DIST" >&2
