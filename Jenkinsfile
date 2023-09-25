@@ -4,7 +4,13 @@ node(label: 'raspberrypi') {
         durabilityHint(hint: 'PERFORMANCE_OPTIMIZED')
     ])
 
-    def dists = ["stretch", "buster", "bullseye"]
+    def dist_arch_list = [
+      ["stretch", "armhf"],
+      ["buster", "armhf"],
+      ["bullseye", "armhf"],
+      ["bullseye", "arm64"]
+    ]
+
     def srcdir = "${WORKSPACE}/src"
 
     stage('Checkout') {
@@ -15,35 +21,48 @@ node(label: 'raspberrypi') {
         }
     }
 
-    for (int i = 0; i < dists.size(); ++i) {
-        def dist = dists[i]
-        def pkgdir = "package-${dist}"
-        def results = "results-${dist}"
+    def pkgdirs = [:]
+    def resultdirs = [:]
+    for (int i = 0; i < dist_arch_list.size(); ++i) {
+        def dist_and_arch = dist_arch_list[i]
+        def dist = dist_and_arch[0]
+        def arch = dist_and_arch[1]
 
-        stage("Prepare source for ${dist}") {
-            sh "rm -fr ${pkgdir}"
-            sh "${srcdir}/prepare-build.sh ${dist} ${pkgdir}"
+        String pkgdir
+        if (pkgdirs.containsKey(dist)) {
+            pkgdir = pkgdirs[dist]
+        } else {
+            pkgdir = "pkg-${dist}"
+            stage("Prepare source for ${dist}") {
+                sh "rm -fr ${pkgdir}"
+                sh "${srcdir}/prepare-build.sh ${dist} ${pkgdir}"
+            }
+            pkgdirs[dist] = pkgdir
         }
 
-        stage("Build for ${dist}") {
-            sh "rm -fr ${results}"
-            sh "mkdir -p ${results}"
+        def resultdir = "results-${dist}-${arch}"
+        resultdirs[dist_and_arch] = resultdir
+        stage("Build for ${dist} (${arch})") {
+            sh "rm -fr ${resultdir}"
+            sh "mkdir -p ${resultdir}"
             dir(pkgdir) {
-                sh "DIST=${dist} BRANCH=${env.BRANCH_NAME} pdebuild --use-pdebuild-internal --debbuildopts -b --buildresult ${WORKSPACE}/${results} -- --override-config"
+                sh "DIST=${dist} BRANCH=${env.BRANCH_NAME} ARCH=${arch} pdebuild --use-pdebuild-internal --debbuildopts -b --buildresult ${WORKSPACE}/${resultdir} -- --override-config"
             }
-            archiveArtifacts artifacts: "${results}/*.deb", fingerprint: true
+            archiveArtifacts artifacts: "${resultdir}/*.deb", fingerprint: true
         }
 
         stage("Test install on ${dist}") {
-            sh "BRANCH=${env.BRANCH_NAME} /build/pi-builder/scripts/validate-packages.sh ${dist} ${results}/tcl-tls_*.deb"
+            sh "BRANCH=${env.BRANCH_NAME} /build/pi-builder/scripts/validate-packages.sh ${dist} ${resultdir}/tcl-tls_*.deb"
         }
     }
 
     stage('Deploy to internal repository') {
-        for (int i = 0; i < dists.size(); ++i) {
-            def dist = dists[i]
-            def results = "results-${dist}"
-            sh "/build/pi-builder/scripts/deploy.sh -distribution ${dist} -branch ${env.BRANCH_NAME} ${results}/*.deb"
+        for (int i = 0; i < dist_arch_list.size(); ++i) {
+            def dist_and_arch = dist_arch_list[i]
+            def dist = dist_and_arch[0]
+            def arch = dist_and_arch[1]
+            def resultdir = resultdirs[dist_and_arch]
+            sh "/build/pi-builder/scripts/deploy.sh -distribution ${dist} -branch ${env.BRANCH_NAME} ${resultdir}/*.deb"
         }
     }
 }
