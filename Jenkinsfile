@@ -51,8 +51,8 @@ node(label: 'raspberrypi') {
             archiveArtifacts artifacts: "${resultdir}/*.deb", fingerprint: true
         }
 
-        stage("Test install on ${dist}") {
-            sh "BRANCH=${env.BRANCH_NAME} /build/pi-builder/scripts/validate-packages.sh ${dist} ${resultdir}/tcl-tls_*.deb"
+        stage("Test install on ${dist} (${arch})") {
+            sh "BRANCH=${env.BRANCH_NAME} ARCH=${arch} /build/pi-builder/scripts/validate-packages.sh ${dist} ${resultdir}/tcl-tls_*.deb"
         }
     }
 
