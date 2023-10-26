@@ -5,7 +5,6 @@ node(label: 'raspberrypi') {
     ])
 
     def dist_arch_list = [
-      ["stretch", "armhf"],
       ["buster", "armhf"],
       ["bullseye", "armhf"],
       ["bullseye", "arm64"]
